@@ -1,11 +1,24 @@
 const { Schema, model } = require("mongoose");
 
 // User Schema
-// Don't forget email validator
+
 const userSchema = new Schema(
   {
-    username: { type: String, required: true, unique: true, trim: true },
-    email: { type: String, required: true, unique: true },
+    username: {
+      type: String,
+      required: [true, "Must have a username"],
+      unique: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, "A user must have an email."],
+      unique: true,
+      match: [
+        /([a-zA-Z0-9-_\.]+)(@\w+\.)(\w{2,6})/,
+        "User must have a valid email address.",
+      ],
+    },
     thoughts: [{ type: Schema.Types.ObjectId, ref: "thought" }],
     friends: [{ type: Schema.Types.ObjectId, ref: "user" }],
   },
@@ -26,7 +39,12 @@ userSchema.virtual("friendsCount").get(function () {
 // username that creates the thought
 const thoughtSchema = new Schema(
   {
-    thoughtText: { type: String, required: true, minLength: 1, maxLength: 280 },
+    thoughtText: {
+      type: String,
+      required: true,
+      minLength: [1, "A thought's 'thoughtText' can not be empty"],
+      maxLength: [280, "A thought can not have more than 280 characters"],
+    },
     createdAt: { type: Date, default: Date.now },
     username: { type: String, required: true },
     reactions: [],
