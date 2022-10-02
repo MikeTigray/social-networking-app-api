@@ -2,6 +2,7 @@ const { Thought, User, reactionSchema } = require("../models");
 module.exports = {
   getAllUsers(req, res) {
     User.find({})
+      .populate("friends")
       .then((data) => res.status(200).json(data))
       .catch((err) => res.status(404).json(err));
   },
@@ -62,13 +63,29 @@ module.exports = {
         });
       })
       .catch((err) =>
-        res
-          .status(400)
-          .json({
-            status: "Unfortunately, friend could NOT be added.",
-            message: err,
-          })
+        res.status(400).json({
+          status: "Unfortunately, friend could NOT be added.",
+          message: err,
+        })
       );
   },
-  removeFriend(req, res) {},
+  removeFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } },
+      { new: true }
+    )
+      .then((data) => {
+        res.status(200).json({
+          status: `Friend was removed successfully!`,
+          updatedUser: data,
+        });
+      })
+      .catch((err) =>
+        res.status(400).json({
+          status: "Oops, not a friend 😅",
+          message: err,
+        })
+      );
+  },
 };
