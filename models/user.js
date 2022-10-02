@@ -45,7 +45,15 @@ thoughtSchema.virtual("reactionsCount").get(function () {
   return this.reactions.length;
 });
 
-// GETTER function for thoughts Schema Date
+const reactionSchema = new Schema({
+  reactionId: {},
+  reactionBody: { type: String, maxLength: 280 },
+  username: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+  get: formatTimeStamp,
+});
+
+// GETTER function that returns time stamp
 function formatTimeStamp() {
   return `This thought was created at: ${createdAt}`;
 }
