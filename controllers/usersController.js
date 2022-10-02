@@ -38,7 +38,17 @@ module.exports = {
         res.status(404).json({ status: "User can not be updated!", error: err })
       );
   },
-  removeUser(req, res) {},
+  // Todo:Remove user's associated thoughts when deleted
+  removeUser(req, res) {
+    User.findOneAndDelete({ _id: req.params.userId }).then((data) => {
+      if (!data) {
+        res.status(200).json({ status: "No User with this Id" });
+      }
+      res
+        .status(200)
+        .json({ status: "User was deleted successfully", deletedUser: data });
+    });
+  },
   addFriend(req, res) {},
   removeFriend(req, res) {},
 };
