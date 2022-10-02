@@ -11,9 +11,6 @@ const reactionSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      get: (date) => {
-        return `This thought was created at: ${date}`;
-      },
     },
   },
   {
@@ -60,4 +57,3 @@ thoughtSchema.virtual("reactionsCount").get(function () {
 const Thought = model("thought", thoughtSchema);
 
 module.exports = { Thought, reactionSchema };
-console.log(Schema.Types);
