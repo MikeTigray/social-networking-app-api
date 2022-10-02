@@ -49,6 +49,26 @@ module.exports = {
         .json({ status: "User was deleted successfully", deletedUser: data });
     });
   },
-  addFriend(req, res) {},
+  addFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $push: { friends: req.params.friendId } },
+      { new: true }
+    )
+      .then((data) => {
+        res.status(200).json({
+          status: `Friend was added successfully!`,
+          updatedUser: data,
+        });
+      })
+      .catch((err) =>
+        res
+          .status(400)
+          .json({
+            status: "Unfortunately, friend could NOT be added.",
+            message: err,
+          })
+      );
+  },
   removeFriend(req, res) {},
 };
