@@ -1,4 +1,4 @@
-const { Thought } = require("../models");
+const { Thought, reactionSchema } = require("../models");
 
 module.exports = {
   getAllThoughts(req, res) {
@@ -44,6 +44,18 @@ module.exports = {
       });
     });
   },
-  createReaction(req, res) {},
+  async createReaction(req, res) {
+    try {
+      const thought = await Thought.findOne({ _id: req.params.thoughtId });
+      const updated = await thought.updateOne({
+        $push: { reactions: req.body },
+      });
+      res
+        .status(200)
+        .json({ status: "Reaction was added successfully!", result: updated });
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  },
   removeReaction(req, res) {},
 };
