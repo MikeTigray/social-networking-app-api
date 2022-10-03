@@ -57,5 +57,26 @@ module.exports = {
       res.status(400).json(error);
     }
   },
-  removeReaction(req, res) {},
+  // todo: pulling id from array of reactions
+  removeReaction(req, res) {
+    Thought.findOneAndUpdate(
+      {
+        _id: req.params.thoughtId,
+      },
+      {
+        $pull: {
+          reactions: { reactionId: req.params.reactionId },
+        },
+      },
+      { new: true, runValidators: true }
+    )
+      .then((result) => {
+        res.json(result);
+        // res.status(200).json({
+        //   status: "Reaction was deleted successfully!",
+        //   // results: result,
+        // });
+      })
+      .catch((error) => res.status(400).json(error));
+  },
 };

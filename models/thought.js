@@ -1,16 +1,17 @@
 const { Schema, model, Types } = require("mongoose");
-
+// todo: Getters to format timestamp
 const reactionSchema = new Schema(
   {
     reactionId: {
       type: Schema.Types.ObjectId,
-      default: new Types.ObjectId(),
+      default: () => new Types.ObjectId(),
     },
     reactionBody: { type: String, maxLength: 280 },
     username: { type: String, required: true },
     createdAt: {
       type: Date,
       default: Date.now,
+      // get: (timestamp) => createDate(timestamp),
     },
   },
   {
@@ -21,9 +22,9 @@ const reactionSchema = new Schema(
   }
 );
 // GETTER function that returns time stamp
-// function formatTimeStamp(createdAt) {
-//   return `This thought was created at: ${createdAt}`;
-// }
+function createDate(createdAt) {
+  return `This thought was created at: ${createdAt}`;
+}
 // Thought Schema
 // username that creates the thought
 
@@ -35,14 +36,17 @@ const thoughtSchema = new Schema(
       minLength: [1, "A thought's 'thoughtText' can not be empty"],
       maxLength: [280, "A thought can not have more than 280 characters"],
     },
-    createdAt: { type: Date, default: Date.now },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      get: (timestamp) => createDate(timestamp),
+    },
     username: { type: String, required: true },
     reactions: [reactionSchema],
-    // get: formatTimeStamp,
   },
   {
     toJSON: {
-      virtuals: true,
+      getters: true,
     },
     id: false,
   }
