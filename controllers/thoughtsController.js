@@ -19,8 +19,7 @@ module.exports = {
 
       res.status(201).json({
         status: "Thought created successfully 💭",
-        thought: createdThought,
-        associatedUser: associatedUser,
+        thought: associatedUser,
       });
     } catch (error) {
       res.status(400).json(error);

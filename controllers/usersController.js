@@ -20,6 +20,7 @@ module.exports = {
   },
   getSingleUser(req, res) {
     User.findOne({ _id: req.params.userId })
+      .populate("thoughts")
       .populate("friends")
       .then((data) => res.status(200).json(data))
       .catch((err) => res.status(404).json(err));
