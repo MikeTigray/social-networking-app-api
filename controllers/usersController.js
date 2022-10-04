@@ -1,4 +1,4 @@
-const { Thought, User, reactionSchema } = require("../models");
+const { Thought, User } = require("../models");
 module.exports = {
   getAllUsers(req, res) {
     User.find({})
@@ -39,7 +39,6 @@ module.exports = {
         res.status(404).json({ status: "User can not be updated!", error: err })
       );
   },
-  // Todo:Remove user's associated thoughts when deleted
   async removeUser(req, res) {
     try {
       const user = await User.findOne({ _id: req.params.userId });

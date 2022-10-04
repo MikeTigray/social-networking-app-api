@@ -1,5 +1,10 @@
 const { Schema, model, Types } = require("mongoose");
 // todo: Getters to format timestamp
+
+function formatTime(createdAt, model) {
+  return `This ${model} was created on ${createdAt.toDateString()} at ${createdAt.getHours()}:${createdAt.getMinutes()}`;
+}
+
 const reactionSchema = new Schema(
   {
     reactionId: {
@@ -10,23 +15,19 @@ const reactionSchema = new Schema(
     username: { type: String, required: true },
     createdAt: {
       type: Date,
-      default: Date.now,
-      // get: (timestamp) => createDate(timestamp),
+      default: new Date(),
+      get: (createdAt) => formatTime(createdAt, "reaction"),
     },
   },
   {
     toJSON: {
+      virtuals: true,
       getters: true,
     },
     _id: false,
   }
 );
-// GETTER function that returns time stamp
-function createDate(createdAt) {
-  return `This thought was created at: ${createdAt}`;
-}
-// Thought Schema
-// username that creates the thought
+// GETTER function that formats time for thought and reaction
 
 const thoughtSchema = new Schema(
   {
@@ -38,8 +39,8 @@ const thoughtSchema = new Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-      get: (timestamp) => createDate(timestamp),
+      default: new Date(),
+      get: (createdAt) => formatTime(createdAt, "thought"),
     },
     username: { type: String, required: true },
     reactions: [reactionSchema],
@@ -47,6 +48,7 @@ const thoughtSchema = new Schema(
   {
     toJSON: {
       getters: true,
+      virtuals: true,
     },
     id: false,
   }
