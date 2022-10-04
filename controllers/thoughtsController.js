@@ -1,4 +1,4 @@
-const { Thought, reactionSchema } = require("../models");
+const { Thought, reactionSchema, User } = require("../models");
 
 module.exports = {
   getAllThoughts(req, res) {
@@ -6,16 +6,24 @@ module.exports = {
       err ? res.status(404).json(err) : res.status(200).json(documents);
     });
   },
-  createThought(req, res) {
-    Thought.create(req.body)
-      .then((result) => {
-        res
-          .status(201)
-          .json({ status: "Thought created successfully 💭", thought: result });
-      })
-      .catch((err) => {
-        res.status(400).json({ status: "Though was NOT created!" });
+  async createThought(req, res) {
+    try {
+      const createdThought = await Thought.create(req.body);
+      const associatedUser = await User.findOneAndUpdate(
+        {
+          username: createdThought.username,
+        },
+        { $push: { thoughts: createdThought._id } },
+        { new: true }
+      );
+
+      res.status(201).json({
+        status: "Thought created successfully 💭",
+        thought: associatedUser,
       });
+    } catch (error) {
+      res.status(400).json(error);
+    }
   },
   getSingleThought(req, res) {
     Thought.findOne({ _id: req.params.thoughtId }, (err, thought) =>
@@ -57,7 +65,7 @@ module.exports = {
       res.status(400).json(error);
     }
   },
-  // todo: pulling id from array of reactions
+
   removeReaction(req, res) {
     Thought.findOneAndUpdate(
       {
@@ -71,11 +79,10 @@ module.exports = {
       { new: true, runValidators: true }
     )
       .then((result) => {
-        res.json(result);
-        // res.status(200).json({
-        //   status: "Reaction was deleted successfully!",
-        //   // results: result,
-        // });
+        res.status(200).json({
+          status: "Reaction was deleted successfully!",
+          results: result,
+        });
       })
       .catch((error) => res.status(400).json(error));
   },
