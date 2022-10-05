@@ -1,5 +1,4 @@
 const { Schema, model, Types } = require("mongoose");
-// todo: Getters to format timestamp
 
 function formatTime(createdAt, model) {
   return `This ${model} was created on ${createdAt.toDateString()} at ${createdAt.getHours()}:${createdAt.getMinutes()}`;

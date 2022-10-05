@@ -43,17 +43,26 @@ module.exports = {
   async removeUser(req, res) {
     try {
       const user = await User.findOne({ _id: req.params.userId });
+
       if (!user) {
         res.status(200).json({ status: "No User with this Id" });
       }
 
-      const thought = await Thought.findOne({ username: user.username });
-      const deletedThough = await thought.deleteOne();
+      Thought.findOneAndDelete(
+        {
+          username: user.username,
+        },
+        (err, result) =>
+          err
+            ? console.log(err)
+            : console.log(`Deleted associated thought: ${result}`)
+      );
+
       const deletedUser = await user.deleteOne();
+
       res.status(200).json({
         status: "User was deleted successfully",
         deletedUser: deletedUser,
-        deletedThought: deletedThough,
       });
     } catch (error) {
       res.status(400).json(error);
