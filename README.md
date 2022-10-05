@@ -56,6 +56,6 @@ You can find my GitHub at:
 
 ## Video & Github repo link
 
-#### 🎥 [Walkthrough video link](https://youtu.be/mVj-c3SFcIc)
+#### 🎥 [Walkthrough video link](https://youtu.be/SnyJNNu5UZo)
 
 #### [Github repo link](https://github.com/MikeTigray/social-networking-app-api)
